@@ -5,3 +5,7 @@ compatibility_date = "2026-07-08"
 directory = "./out"
 html_handling = "auto-trailing-slash"
 not_found_handling = "404-page"
+
+[[routes]]
+pattern = "gaming-pe-pal.com"
+custom_domain = true

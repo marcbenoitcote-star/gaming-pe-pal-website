@@ -33,7 +33,7 @@ Parametres recommandes :
 - Build command : `npm run build`
 - Deploy command : `npx wrangler deploy`
 - Node.js version : `22`
-- Variable production : `NEXT_PUBLIC_SITE_URL=https://ton-domaine.com`
+- Variable production : `NEXT_PUBLIC_SITE_URL=https://gaming-pe-pal.com`
 
 Guide complet : `DEPLOY_CLOUDFLARE.md`.
 

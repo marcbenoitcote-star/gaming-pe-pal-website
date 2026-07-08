@@ -13,7 +13,7 @@ Le site est prepare pour Cloudflare Workers Static Assets en export statique Nex
    - Root directory : vide
    - Node.js version : `22`
 5. Ajoute cette variable d'environnement en production :
-   - `NEXT_PUBLIC_SITE_URL=https://ton-domaine.com`
+   - `NEXT_PUBLIC_SITE_URL=https://gaming-pe-pal.com`
 6. Lance le deploy.
 
 ## Option 2 - Upload direct avec Wrangler
@@ -31,11 +31,10 @@ La commande publie le dossier `out/` sur le Worker `gaming-pe-pal-website`.
 
 ## Domaine personnalise
 
-Dans Cloudflare, ouvre le Worker puis va dans `Settings`, `Domains & Routes` pour ajouter ton domaine ou sous-domaine, par exemple :
+Le domaine principal est configure dans `wrangler.toml` :
 
 ```text
-gamingpepal.com
-pal.gamingpepal.com
+gaming-pe-pal.com
 ```
 
 ## Verification avant publication

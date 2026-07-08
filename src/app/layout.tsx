@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 
 const description =
   "Serveur privé Palworld francophone avec PvP léger, guildes de 3 joueurs, raids encadrés, progression équilibrée et communauté Discord.";
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gaming-pe-pal.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -14,9 +14,15 @@ export const metadata: Metadata = {
     template: "%s | Gaming P&E Pal"
   },
   description,
+  alternates: {
+    canonical: "/"
+  },
   openGraph: {
     title: "Gaming P&E Pal — Serveur privé Palworld PvP léger",
     description,
+    url: "/",
+    siteName: "Gaming P&E Pal",
+    locale: "fr_CA",
     type: "website",
     images: [
       {
