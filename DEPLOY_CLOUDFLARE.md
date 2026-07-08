@@ -27,7 +27,7 @@ npx wrangler login
 npm run deploy:cloudflare
 ```
 
-La commande publie le dossier `out/` sur le Worker `gaming-pe-pal`.
+La commande publie le dossier `out/` sur le Worker `gaming-pe-pal-website`.
 
 ## Domaine personnalise
 
