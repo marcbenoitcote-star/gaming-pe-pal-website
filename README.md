@@ -24,14 +24,14 @@ Le site sera disponible sur l'URL affichée par Next.js, généralement `http://
 npm run build
 ```
 
-Le build genere un export statique dans `out/`, pret pour Cloudflare Pages.
+Le build genere un export statique dans `out/`, pret pour Cloudflare Workers Static Assets.
 
-## Deploiement Cloudflare Pages
+## Deploiement Cloudflare Workers
 
 Parametres recommandes :
 
 - Build command : `npm run build`
-- Build output directory : `out`
+- Deploy command : `npx wrangler deploy`
 - Node.js version : `22`
 - Variable production : `NEXT_PUBLIC_SITE_URL=https://ton-domaine.com`
 
