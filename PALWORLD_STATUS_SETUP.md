@@ -33,16 +33,17 @@ Ajoute sa valeur comme secret Cloudflare. Ne le mets jamais dans GitHub, Discord
 Depuis le dossier du site :
 
 ```powershell
-npx wrangler secret put PALWORLD_ADMIN_PASSWORD
+cd "G:\Projet\Gaming P&E Pal Website"
+node .\node_modules\wrangler\bin\wrangler.js secret put PALWORLD_ADMIN_PASSWORD
 ```
 
-Colle le mot de passe quand Wrangler le demande, puis redeploie :
+Colle le mot de passe quand Wrangler le demande, puis appuie sur Entree. Rien ne s'affiche pendant la frappe ou le
+collage du mot de passe : c'est normal.
 
-```powershell
-npm run deploy:cloudflare
-```
+Le mot de passe ne doit pas etre ecrit dans la commande. La commande contient seulement le nom du secret
+`PALWORLD_ADMIN_PASSWORD`.
 
-Apres le deploiement, attends une a deux minutes et verifie :
+Apres l'ajout du secret, attends une a deux minutes et verifie :
 
 ```powershell
 Invoke-RestMethod https://gaming-pe-pal.com/api/server-status

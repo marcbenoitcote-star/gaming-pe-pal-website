@@ -6,8 +6,8 @@
     "dev": "node ./node_modules/next/dist/bin/next dev --webpack",
     "build": "node ./node_modules/next/dist/bin/next build --webpack",
     "build:cloudflare": "npm run build",
-    "preview:cloudflare": "wrangler dev",
-    "deploy:cloudflare": "wrangler deploy"
+    "preview:cloudflare": "node ./node_modules/wrangler/bin/wrangler.js dev",
+    "deploy:cloudflare": "node ./node_modules/wrangler/bin/wrangler.js deploy"
   },
   "engines": {
     "node": ">=22"
