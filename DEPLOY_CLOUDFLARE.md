@@ -14,7 +14,16 @@ Le site est prepare pour Cloudflare Workers Static Assets en export statique Nex
    - Node.js version : `22`
 5. Ajoute cette variable d'environnement en production :
    - `NEXT_PUBLIC_SITE_URL=https://gaming-pe-pal.com`
+   - `PAYPAL_BASIC_URL`
+   - `PAYPAL_INTERMEDIATE_URL`
+   - `PAYPAL_DELUXE_URL`
+   - `STRIPE_BASIC_URL`
+   - `STRIPE_INTERMEDIATE_URL`
+   - `STRIPE_DELUXE_URL`
 6. Lance le deploy.
+
+Les variables de paiement peuvent rester vides. Dans ce cas, la page Soutien affiche `Paiement bientôt disponible`
+et demande au joueur d'attendre la confirmation de l'administration.
 
 ## Option 2 - Upload direct avec Wrangler
 

@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/regles", label: "Règles" },
   { href: "/guides", label: "Guides" },
   { href: "/evenements", label: "Événements" },
+  { href: "/soutien", label: "Soutien" },
   { href: "/faq", label: "FAQ" },
   { href: "/communaute", label: "Discord" }
 ];
@@ -43,11 +44,11 @@ export function Header() {
           <span className="text-base font-bold text-white sm:text-lg">Gaming P&E Pal</span>
         </Link>
 
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="hidden items-center gap-1 xl:flex">
           <NavItems />
         </div>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-3 xl:flex">
           <a
             href={discordInvite}
             target="_blank"
@@ -60,7 +61,7 @@ export function Header() {
           </a>
         </div>
 
-        <details className="relative lg:hidden">
+        <details className="relative xl:hidden">
           <summary
             aria-label="Ouvrir la navigation"
             className="grid h-10 w-10 cursor-pointer list-none place-items-center rounded-lg border border-white/[0.15] bg-white/[0.08] text-white [&::-webkit-details-marker]:hidden"

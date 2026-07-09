@@ -1,4 +1,4 @@
-export const siteVersion = "0.1.0";
+export const siteVersion = "0.2.0";
 
 export const discordInvite = "https://discord.gg/uzaZUxTKhs";
 

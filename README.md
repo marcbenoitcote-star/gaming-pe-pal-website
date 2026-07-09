@@ -125,6 +125,50 @@ Les images décoratives présentes dans `public/images` sont créditées à Pock
 
 Gaming P&E Pal est une communauté non officielle de joueurs. Palworld et ses éléments associés appartiennent à Pocketpair, Inc. Ce site n'est pas affilié, approuvé ou sponsorisé par Pocketpair.
 
+## Configurer les packs de soutien
+
+La page `/soutien` fonctionne sans service de paiement integre. Le formulaire prepare un resume que le joueur peut
+envoyer par courriel ou copier pour Discord. Aucun lien de paiement n'est affiche tant qu'il n'est pas configure.
+
+Les prix et objets se modifient dans `src/data/supportPacks.ts`. L'adresse PayPal de contact et la lecture des
+variables de paiement se trouvent dans `src/data/supportPaymentConfig.ts`.
+
+Configure les liens dans les variables d'environnement Cloudflare :
+
+```text
+PAYPAL_BASIC_URL
+PAYPAL_INTERMEDIATE_URL
+PAYPAL_DELUXE_URL
+STRIPE_BASIC_URL
+STRIPE_INTERMEDIATE_URL
+STRIPE_DELUXE_URL
+```
+
+Chaque valeur doit etre une URL HTTPS complete. Les liens PayPal peuvent etre remplaces plus tard par des liens
+PayPal Business. Les liens Stripe doivent etre des Stripe Payment Links. Ne place jamais un mot de passe, une cle API
+ou un secret dans ces variables.
+
+Un exemple sans secrets est fourni dans `.env.example`. Apres une modification des variables Cloudflare, relance un
+deploiement pour regenerer le site statique.
+
+## Suivi Google Sheet
+
+Le suivi peut etre fait manuellement en copiant le resume genere par le formulaire. Utilise ces colonnes :
+
+```text
+Date, Plateforme, Email joueur, Pseudo Steam, Pseudo Discord, Personnage, Pack, Montant,
+Frais, Net recu, Confirmation soutien, Livre ?, Date de livraison, Note
+```
+
+Protege la feuille, limite son partage aux administrateurs et n'y conserve que les informations necessaires a la
+livraison et au rapprochement des paiements.
+
+## Suivi dans Wave
+
+Pour chaque transaction, cree une entree de revenu avec la date, le pack, le montant brut, les frais PayPal ou Stripe
+et le montant net recu. Ajoute la reference de paiement dans la note et rapproche periodiquement Wave avec le Google
+Sheet. La mention TPS/TVQ affichee sur le site doit etre revue si le statut fiscal de l'administrateur change.
+
 ## Structure
 
 ```text
@@ -134,6 +178,7 @@ src/
     serveur/page.tsx
     regles/page.tsx
     guides/page.tsx
+    soutien/page.tsx
     evenements/page.tsx
     communaute/page.tsx
     faq/page.tsx

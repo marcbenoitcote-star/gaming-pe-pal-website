@@ -8,6 +8,7 @@ const footerLinks = [
   { href: "/serveur", label: "Configuration" },
   { href: "/regles", label: "Règles" },
   { href: "/guides", label: "Guides" },
+  { href: "/soutien", label: "Packs de soutien" },
   { href: "/contact", label: "Tickets" },
   { href: "/roadmap", label: "Roadmap" },
   { href: "/credits", label: "Crédits images" }
