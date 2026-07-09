@@ -39,9 +39,10 @@ Guide complet : `DEPLOY_CLOUDFLARE.md`.
 
 ## Statut en direct du serveur Palworld
 
-La page d'accueil interroge `/api/server-status` pour afficher l'etat du serveur, le nombre de joueurs, la capacite,
-le temps en ligne, les FPS et le jour du monde. Les donnees sont envoyees par un agent local securise et conservees
-dans Workers KV. Le port REST et le mot de passe administrateur Palworld ne sont jamais exposes au navigateur.
+La page d'accueil interroge `/api/server-status` pour afficher l'etat du serveur, l'adresse joueur
+`174.138.184.118:27049`, le nombre de joueurs et la capacite. Sur Game Host Bros, le Worker Cloudflare peut lire RCON
+sur `174.138.184.118:27050` avec un secret `PALWORLD_RCON_PASSWORD`; aucun mot de passe ni identifiant joueur n'est
+expose au navigateur.
 
 Configuration complete : `PALWORLD_STATUS_SETUP.md`.
 

@@ -4,6 +4,7 @@ import {
   Activity,
   CalendarDays,
   Clock3,
+  Copy,
   Gauge,
   RefreshCw,
   Server,
@@ -12,6 +13,8 @@ import {
   WifiOff
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { CopyButton } from "@/components/CopyButton";
+import { serverConfig } from "@/data/serverConfig";
 import type { PublicServerStatus } from "@/types/serverStatus";
 
 const REFRESH_INTERVAL_MS = 30_000;
@@ -169,6 +172,19 @@ export function ServerStatusPanel() {
               <RefreshCw className={`h-5 w-5 ${refreshing ? "animate-spin" : ""}`} aria-hidden="true" />
             </button>
           </div>
+        </div>
+
+        <div className="mt-6 flex flex-col gap-3 rounded-lg border border-white/10 bg-night-800 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3 text-slate-300">
+            <Copy className="h-5 w-5 text-ember-300" aria-hidden="true" />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                Adresse de connexion
+              </p>
+              <p className="mt-1 text-lg font-black text-white">{serverConfig.connectionAddress}</p>
+            </div>
+          </div>
+          <CopyButton value={serverConfig.connectionAddress} ariaLabel="Copier l'adresse du serveur" />
         </div>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

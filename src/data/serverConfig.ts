@@ -22,6 +22,7 @@ export const serverConfig = {
   type: "Serveur privé Palworld",
   style: "PvP léger",
   populationMax: 24,
+  connectionAddress: "174.138.184.118:27049",
   guildSize: 3,
   basesPerGuild: 2,
   workerMax: 15,

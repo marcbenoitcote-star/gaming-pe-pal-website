@@ -13,6 +13,14 @@ run_worker_first = ["/api/*"]
 [observability]
 enabled = true
 
+[triggers]
+crons = ["*/1 * * * *"]
+
+[vars]
+PALWORLD_RCON_HOST = "174.138.184.118"
+PALWORLD_RCON_PORT = "27050"
+PALWORLD_MAX_PLAYERS = "24"
+
 [[kv_namespaces]]
 binding = "SERVER_STATUS"
 id = "a1ba62edd24f45798ef1c0141490d440"
