@@ -10,6 +10,8 @@ interface WorkerEnv {
   PALWORLD_RCON_HOST?: string;
   PALWORLD_RCON_PORT?: string;
   PALWORLD_RCON_PASSWORD?: string;
+  PALWORLD_ADMIN_PASSWORD?: string;
+  PALWORLD_REST_URL?: string;
   PALWORLD_MAX_PLAYERS?: string;
 }
 
@@ -25,6 +27,7 @@ const STALE_AFTER_MS = 2 * 60 * 1000;
 const MAX_BODY_BYTES = 8 * 1024;
 const DEFAULT_RCON_HOST = "174.138.184.118";
 const DEFAULT_RCON_PORT = 27050;
+const DEFAULT_REST_URL = "http://174.138.184.118:27051/v1/api";
 const DEFAULT_MAX_PLAYERS = 24;
 const RCON_PACKET_AUTH = 3;
 const RCON_PACKET_AUTH_RESPONSE = 2;
@@ -85,6 +88,27 @@ function parsePositiveInteger(value: string | undefined, fallback: number, maxim
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed <= 0 || parsed > maximum) return fallback;
   return parsed;
+}
+
+function parseOptionalNumber(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+
+  return undefined;
+}
+
+function base64Utf8(value: string) {
+  const bytes = rconEncoder.encode(value);
+  let binary = "";
+
+  for (let index = 0; index < bytes.length; index += 1) {
+    binary += String.fromCharCode(bytes[index]);
+  }
+
+  return btoa(binary);
 }
 
 function sanitizeUpdate(value: unknown): ServerStatusUpdate | null {
@@ -295,8 +319,63 @@ function parsePlayerCount(showPlayers: string) {
   return playerRows.length;
 }
 
+async function fetchRestJson(apiBaseUrl: string, path: string, password: string) {
+  const response = await withTimeout(fetch(`${apiBaseUrl}${path}`, {
+    headers: {
+      Authorization: `Basic ${base64Utf8(`admin:${password}`)}`,
+      Accept: "application/json"
+    }
+  }), 5_000);
+
+  if (!response) throw new Error(`REST ${path} expire.`);
+  if (!response.ok) throw new Error(`REST ${path} HTTP ${response.status}.`);
+
+  const parsed: unknown = await response.json();
+  if (!isRecord(parsed)) throw new Error(`REST ${path} JSON invalide.`);
+
+  return parsed;
+}
+
+async function collectRestStatus(env: WorkerEnv): Promise<ServerStatusUpdate | null> {
+  const password = env.PALWORLD_ADMIN_PASSWORD;
+  if (!password) return null;
+
+  const apiBaseUrl = (cleanString(env.PALWORLD_REST_URL, 500) ?? DEFAULT_REST_URL).replace(/\/+$/, "");
+  const maxPlayers = parsePositiveInteger(env.PALWORLD_MAX_PLAYERS, DEFAULT_MAX_PLAYERS, 1000);
+
+  try {
+    const [info, metrics] = await Promise.all([
+      fetchRestJson(apiBaseUrl, "/info", password),
+      fetchRestJson(apiBaseUrl, "/metrics", password)
+    ]);
+
+    return {
+      online: true,
+      serverName: cleanString(info.servername, 100) ?? emptyStatus.serverName,
+      description: cleanString(info.description, 300),
+      version: cleanString(info.version, 50),
+      currentPlayers: cleanNumber(parseOptionalNumber(metrics.currentplayernum), 0, 1000),
+      maxPlayers: cleanNumber(parseOptionalNumber(metrics.maxplayernum), 1, 1000) ?? maxPlayers,
+      serverFps: cleanNumber(parseOptionalNumber(metrics.serverfps), 0, 1000, false),
+      uptimeSeconds: cleanNumber(parseOptionalNumber(metrics.uptime), 0, 315_360_000),
+      worldDay: cleanNumber(parseOptionalNumber(metrics.days), 0, 10_000_000),
+      baseCampCount: cleanNumber(parseOptionalNumber(metrics.basecampnum), 0, 100_000)
+    };
+  } catch (error) {
+    console.warn(JSON.stringify({
+      event: "palworld_rest_poll_failed",
+      message: error instanceof Error ? error.message : "unknown_error"
+    }));
+
+    return {
+      online: false,
+      maxPlayers
+    };
+  }
+}
+
 async function collectRconStatus(env: WorkerEnv): Promise<ServerStatusUpdate | null> {
-  const password = env.PALWORLD_RCON_PASSWORD;
+  const password = env.PALWORLD_RCON_PASSWORD ?? env.PALWORLD_ADMIN_PASSWORD;
   if (!password) return null;
 
   const hostname = cleanString(env.PALWORLD_RCON_HOST, 253) ?? DEFAULT_RCON_HOST;
@@ -394,9 +473,17 @@ async function writeServerStatus(env: WorkerEnv, update: ServerStatusUpdate) {
   return record;
 }
 
-async function refreshStatusFromRcon(env: WorkerEnv) {
-  const update = await collectRconStatus(env);
+async function refreshStatusFromProviders(env: WorkerEnv) {
+  const restUpdate = await collectRestStatus(env);
+  if (restUpdate?.online) {
+    await writeServerStatus(env, restUpdate);
+    return;
+  }
+
+  const rconUpdate = await collectRconStatus(env);
+  const update = rconUpdate ?? restUpdate;
   if (!update) return;
+
   await writeServerStatus(env, update);
 }
 
@@ -453,7 +540,7 @@ async function handleApi(request: Request, env: WorkerEnv) {
 
 export default {
   scheduled(_event, env, ctx): void {
-    ctx.waitUntil(refreshStatusFromRcon(env));
+    ctx.waitUntil(refreshStatusFromProviders(env));
   },
 
   async fetch(request, env): Promise<Response> {

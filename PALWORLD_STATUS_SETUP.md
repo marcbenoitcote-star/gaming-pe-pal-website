@@ -13,24 +13,27 @@ Le site ne collecte ni noms de joueurs, ni Steam ID, ni adresse IP de joueur, ni
 ## Configuration actuelle
 
 - Adresse joueur affichee sur le site : `174.138.184.118:27049`
+- API REST Palworld : `http://174.138.184.118:27051/v1/api`
 - Hote RCON : `174.138.184.118`
 - Port RCON : `27050`
 - Joueurs maximum affiches : `24`
 
 Ces valeurs non secretes sont dans `wrangler.toml` et `src/data/serverConfig.ts`.
 
-## Option recommandee avec Game Host Bros : RCON Cloudflare
+## Option recommandee avec Game Host Bros : REST puis RCON
 
-Le Worker Cloudflare a une tache planifiee qui peut interroger RCON toutes les minutes. Il lit seulement `Info` et
-`ShowPlayers`, puis stocke un statut public dans Workers KV.
+Le Worker Cloudflare a une tache planifiee qui peut interroger le serveur toutes les minutes.
 
-Il manque seulement le mot de passe RCON/admin, qui doit etre ajoute comme secret Cloudflare. Ne le mets jamais dans
-GitHub, Discord ou une capture d'ecran.
+1. Il tente d'abord l'API REST sur `27051`, qui peut fournir joueurs, FPS, uptime, jour du monde et bases.
+2. Si REST echoue, il tente RCON sur `27050`, qui permet au minimum de lire `Info` et `ShowPlayers`.
+
+Il n'y a pas de mot de passe RCON separe dans `PalWorldSettings.ini`. Le champ a utiliser est `AdminPassword`.
+Ajoute sa valeur comme secret Cloudflare. Ne le mets jamais dans GitHub, Discord ou une capture d'ecran.
 
 Depuis le dossier du site :
 
 ```powershell
-npx wrangler secret put PALWORLD_RCON_PASSWORD
+npx wrangler secret put PALWORLD_ADMIN_PASSWORD
 ```
 
 Colle le mot de passe quand Wrangler le demande, puis redeploie :
@@ -45,8 +48,8 @@ Apres le deploiement, attends une a deux minutes et verifie :
 Invoke-RestMethod https://gaming-pe-pal.com/api/server-status
 ```
 
-Si RCON repond, `status` passera a `online` et `currentPlayers` affichera le nombre de joueurs connectes. Si le serveur
-ne repond pas, le site passera a `offline`.
+Si REST ou RCON repond, `status` passera a `online` et `currentPlayers` affichera le nombre de joueurs connectes. Si le
+serveur ne repond pas, le site passera a `offline`.
 
 ## Option alternative : agent REST local
 
@@ -82,11 +85,12 @@ Essai unique :
 
 ## Diagnostic rapide
 
-- Le site reste en preparation : le secret `PALWORLD_RCON_PASSWORD` n'est pas encore configure ou la tache n'a pas
+- Le site reste en preparation : le secret `PALWORLD_ADMIN_PASSWORD` n'est pas encore configure ou la tache n'a pas
   encore tourne.
-- Le site passe hors ligne : RCON ne repond pas, le mot de passe est incorrect, ou le port `27050` n'est pas joignable.
-- Les joueurs affichent `0 / 24` : RCON repond, mais `ShowPlayers` ne renvoie aucun joueur.
-- Les FPS, uptime et jour du monde affichent des tirets avec RCON : c'est normal. Ces metriques demandent l'API REST.
+- Le site passe hors ligne : REST/RCON ne repondent pas, le mot de passe est incorrect, ou les ports `27051`/`27050`
+  ne sont pas joignables.
+- Les joueurs affichent `0 / 24` : le serveur repond, mais aucun joueur n'est connecte.
+- Les FPS, uptime et jour du monde affichent des tirets : REST ne repond pas et le Worker a du utiliser RCON.
 
 Documentation utile :
 

@@ -19,6 +19,7 @@ crons = ["*/1 * * * *"]
 [vars]
 PALWORLD_RCON_HOST = "174.138.184.118"
 PALWORLD_RCON_PORT = "27050"
+PALWORLD_REST_URL = "http://174.138.184.118:27051/v1/api"
 PALWORLD_MAX_PLAYERS = "24"
 
 [[kv_namespaces]]
