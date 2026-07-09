@@ -37,6 +37,14 @@ Parametres recommandes :
 
 Guide complet : `DEPLOY_CLOUDFLARE.md`.
 
+## Statut en direct du serveur Palworld
+
+La page d'accueil interroge `/api/server-status` pour afficher l'etat du serveur, le nombre de joueurs, la capacite,
+le temps en ligne, les FPS et le jour du monde. Les donnees sont envoyees par un agent local securise et conservees
+dans Workers KV. Le port REST et le mot de passe administrateur Palworld ne sont jamais exposes au navigateur.
+
+Configuration complete : `PALWORLD_STATUS_SETUP.md`.
+
 ## Où modifier les données
 
 Les contenus importants sont dans `src/data` :

@@ -4,6 +4,7 @@ import { DiscordCTA } from "@/components/DiscordCTA";
 import { FeatureCard } from "@/components/FeatureCard";
 import { HeroSection } from "@/components/HeroSection";
 import { SectionTitle } from "@/components/SectionTitle";
+import { ServerStatusPanel } from "@/components/ServerStatusPanel";
 import { ServerStatCard } from "@/components/ServerStatCard";
 import { featureImages, homeDecorativeMedia } from "@/data/media";
 import { discordInvite, serverConfig } from "@/data/serverConfig";
@@ -51,6 +52,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <ServerStatusPanel />
 
       <section className="bg-night-900 px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
